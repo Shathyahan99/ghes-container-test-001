@@ -18,12 +18,28 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release
 
-      - name: Build and Push Docker Image
-        uses: mr-smithers-excellent/docker-build-push@v7
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+  
+      - name: Log in to ACR
+        uses: docker/login-action@v3
         with:
-          image: repo/image
-          tags: v1, latest
           registry: acrghestest.azurecr.io
-          file: Refit.Api/Dockerfile
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+  
+      - name: Build and push container image to ACR
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: acrghestest.azurecr.io/ca-ghes-test-001:${{ github.sha }}
+          file: Refit.Api/Dockerfile
+  
+      # - name: Build and Push Docker Image
+      #   uses: mr-smithers-excellent/docker-build-push@v7
+      #   with:
+      #     image: repo/image
+      #     tags: v1, latest
+      #     registry: acrghestest.azurecr.io
+      #     username: ${{ secrets.DOCKER_USERNAME }}
+      #     password: ${{ secrets.DOCKER_PASSWORD }}
