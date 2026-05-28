@@ -32,7 +32,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: acrghestest.azurecr.io/ca-ghes-test-001:latest
+          tags: acrghestest.azurecr.io/ca-ghes-test-001:${{ github.run_id }}
           file: Refit.Api/Dockerfile
   
       # - name: Build and Push Docker Image
